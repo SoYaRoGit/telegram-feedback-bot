@@ -7,6 +7,7 @@ from requests import Response, get
 
 class Settings(BaseSettings):
     TELEGRAM_TOKEN: str
+    PROTECT_CONTENT: bool
 
     @field_validator("TELEGRAM_TOKEN", mode="before")
     def validate_telegram_token(cls, token: str) -> str:
