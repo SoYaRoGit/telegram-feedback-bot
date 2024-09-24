@@ -1,5 +1,6 @@
 from asyncio import run
 
+from handler import handler_user
 from loader import bot, dispatcher
 
 
@@ -14,6 +15,7 @@ async def shutdown():
 
 
 async def main() -> None:
+    dispatcher.include_router(handler_user.router)
     await bot.delete_webhook(drop_pending_updates=True)
 
     await dispatcher.start_polling(bot)
