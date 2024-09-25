@@ -1,11 +1,13 @@
 from asyncio import run
 
+from database.methods import connect_database
 from handler import handler_user
 from loader import bot, dispatcher
 
 
 @dispatcher.startup()
 async def on_startup():
+    await connect_database()
     print("Бот включён")
 
 

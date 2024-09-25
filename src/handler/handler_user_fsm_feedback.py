@@ -3,6 +3,7 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from database.methods import create_feedback
 from keyboard.keyboard_handler_user import (
     inline_kb_cancel_feedback,
     inline_kb_confirm_feedback,
@@ -68,8 +69,17 @@ async def fsm_feedback_cancel(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.in_("save_feedback"))
 async def fsm_feedback_save(callback: CallbackQuery, state: FSMContext):
+    data: dict = await state.get_data()
+
     # Очищаем FSM
     await state.clear()
+
+    await create_feedback(
+        user_id=callback.from_user.id,
+        user_name=callback.from_user.full_name,
+        text=data["text"],
+    )
+
     # Выводим информацию, что отзыв был сохранен
     await callback.answer(text=LEXICON_RU_HANDLER["fsm_feedback_save"])
 
