@@ -24,7 +24,15 @@ services:
     restart: always
     ports:
       - 8080:8080
+  
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"  # Проброс порта для Redis
+    volumes:
+      - redis_data:/data  # постоянный том для данных Redis
 
 volumes:
   db_data:
-
+  redis_data:
