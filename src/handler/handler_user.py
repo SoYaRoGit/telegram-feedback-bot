@@ -2,10 +2,12 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
+from handler import handler_user_fsm_feedback
 from keyboard.keyboard_handler_user import inline_kb_start_feedback
 from lexicon.lexicon_ru import LEXICON_RU_HANDLER
 
 router = Router()
+router.include_router(handler_user_fsm_feedback.router)
 
 
 @router.message(CommandStart())
