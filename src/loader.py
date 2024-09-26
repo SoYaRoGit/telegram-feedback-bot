@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import Redis, RedisStorage
 
 from config import settings
 
-dispatcher = Dispatcher(storage=RedisStorage(Redis(host="localhost", port=6379)))
+dispatcher = Dispatcher(storage=RedisStorage(Redis(host="redis", port=6379)))
 bot = Bot(
     token=settings.TELEGRAM_TOKEN,
     default=DefaultBotProperties(

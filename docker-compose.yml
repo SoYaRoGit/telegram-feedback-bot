@@ -3,11 +3,8 @@ services:
   db:
     image: postgres
     restart: always
-    # set shared memory limit when using docker-compose
-    #shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
     volumes:
-      - db_data:/var/lib/postgresql/data # постоянный том для данных PostgreSQL
+      - db_data:/var/lib/postgresql/data
       - type: tmpfs
         target: /dev/shm
         tmpfs:
@@ -17,21 +14,39 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"  # Проброс порта
+      - "5432:5432"
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
-  
+
   redis:
     image: redis:latest
     restart: always
     ports:
-      - "6379:6379"  # Проброс порта для Redis
+      - "6379:6379"
     volumes:
-      - redis_data:/data  # постоянный том для данных Redis
+      - redis_data:/data
+
+  python-app:
+    build:
+      context: .
+    container_name: telegram-feedback-bot
+    restart: always
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app  # Монтирование текущей директории в контейнер
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - db
+      - redis
 
 volumes:
   db_data:
