@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from database.database import Base, async_engine, async_session_factory
 from database.models import Feedback
 
@@ -24,3 +26,18 @@ async def create_feedback(user_id: int, user_name: str, text: str):
 
         db.add(feedback)
         await db.commit()
+
+
+async def check_feedback(user_id: int) -> bool:
+    """Функция запрос к базе данных для проверки наличия отзыва у пользователя
+
+    Args:
+        user_id (int): user_id -> telegram_id
+
+    Returns:
+        bool: True если есть отзыв
+    """
+    async with async_session_factory() as db:
+        result = await db.execute(select(Feedback).filter_by(user_telegram_id=user_id))
+        feedback = result.scalars().first()
+        return feedback is not None
