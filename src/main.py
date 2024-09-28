@@ -3,17 +3,22 @@ from asyncio import run
 from database.methods import connect_database
 from handler import handler_user
 from loader import bot, dispatcher
+from utils.logger import logger_main
 
 
 @dispatcher.startup()
 async def on_startup():
-    await connect_database()
-    print("Бот включён")
+    logger_main.info("Бот успешно начал работу")
+    try:
+        await connect_database()
+        logger_main.info("База данных была успешно подключена")
+    except BaseException as error:
+        logger_main.error(f"Произошла ошибка с подключением к базе данных {error}")
 
 
 @dispatcher.shutdown()
 async def shutdown():
-    print("Бот отключён")
+    logger_main.info("Бот успешно прекратил работу")
 
 
 async def main() -> None:
